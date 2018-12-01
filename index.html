@@ -2,27 +2,38 @@
 <html>
 <head>
   <link rel="stylesheet" href="style/main.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src='javascript/data.js'></script>
+  <script src='javascript/models/player.js'></script>
+  <script src='javascript/models/wheel.js'></script>
+  <script src='javascript/models/round.js'></script>
+  <script src='javascript/listeners/game-listeners.js'></script>
+  <script src='javascript/app.js'></script>
 </head>
 <body>
     <div class='container'>
         <h1>Wheel Of Fortune!</h1>
-        
+
         <div class='game-info'>
             <div class='player-info' id='player-1'>
-                <h4>Player 1</h4> 
+                <h4>Player 1</h4>
+                <p>Score: </p>
             </div>
             <div class='player-info' id='player-2'>
-                <h4>Player 2</h4> 
+                <h4>Player 2</h4>
+                <p>Score: </p>
             </div>
             <div class='player-info' id='player-3'>
-                <h4>Player 3</h4> 
+                <h4>Player 3</h4>
+                <p>Score: </p>
             </div>
         </div>
-        
+
         <div class='game'>
+            <div class='wheel'></div>
             <div class='question'></div>
             <div class='answer'> </div>
-            <button type="button"></button>
+            <button type="button" class='game-start'>Start a new game!</button>
         </div>
     </div>
 </body>
