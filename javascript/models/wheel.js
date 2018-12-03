@@ -6,6 +6,11 @@ class Wheel {
   selectValue(){
     let selection = Math.random();
     selection = Math.ceil(selection);
-    return this.options[selection];
+    this.value = this.options[selection];
+    return this.value
+  }
+  removeWheel() {
+    $(".wheel-spin").remove()
+    $(".wheel-options").remove()
   }
 }

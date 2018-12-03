@@ -1,12 +1,13 @@
 $(document).ready(function () {
 
   $(".game-start").click((e) =>{
-    var round = new Round()
-    var game = new Game(round)
-    console.log(game)
-    while (game.round.num < 5) {
-      //play the game.
+    $(".game-start").remove()
 
-    }
+    let round = new Round()
+    let dataHandler = new DataHandler(data)
+    let game = new Game(round, dataHandler)
+    game.startGame();
+    game.initializeWheel();
+    game.spinWheel();
   })
 })
