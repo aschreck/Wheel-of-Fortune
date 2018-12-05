@@ -5,11 +5,26 @@ class Game {
     this.player2 = new Player(2);
     this.player3 = new Player(3);
     this.dataHandler = dataHandler;
+    this.currentPlayer = this.player1;
   }
 
   startGame() {
     $(".game").append("<button class='wheel-spin'>Spin the Wheel!</button>")
   }
+
+  processSpinValue(spinVal) {
+    //this method will have side effects on the game.
+    if (spinVal === "BANKRUPT") {
+      // remove the player's money.
+      this.getBankrupt();
+      // move to the next player and set up the wheel.
+      this.nextPlayer();
+    } else if (spinVal === "LOSE A TURN") {
+      // end the player's turn.
+      this.nextPlayer();
+    }
+  }
+
 
   initializeWheel(){
     let selected = this.dataHandler.getWheelData();
@@ -25,10 +40,12 @@ class Game {
       $(".wheel").append(
         `<div spin-result>Your spin is ${spinVal}</div>`
       )
+      this.processSpinValue(spinVal);
+      this.addPuzzle();
+      this.wheel.removeWheel();
     })
-    this.addPuzzle();
-    this.wheel.removeWheel();
   }
+
   addPuzzle() {
     let puzzle = data.puzzles.one_word_answers.puzzle_bank.sort(() => .5 - Math.random())[0];
     $(".puzzle").append(
@@ -41,5 +58,32 @@ class Game {
         <button class='answer-submit'>Submit</button>
       </div>`
     )
+  }
+
+  nextPlayer() {
+    if (this.currentPlayer.id == 1) {
+      this.currentPlayer = this.player2;
+    } else if (this.currentPlayer.id == 2) {
+      this.currentPlayer = this.player3;
+    } else if (this.currentPlayer.id == 3) {
+      this.currentPlayer = this.player1;
+      //restart the round.
+      this.createNewRound()
+    }
+    console.log(`current player is ${this.currentPlayer.id}`)
+  }
+
+  createNewRound() {
+    let round = new Round(this.round.num + 1);
+    this.round = round;
+    console.log(`current round is ${this.round.num}`)
+    $(".game").append(`<h3>Round: ${this.round.num}</h3>`)
+  }
+
+  getBankrupt() {
+    console.log("you are bankrupt")
+    this.currentPlayer.cash = 0;
+    let id = this.currentPlayer.id + '';
+    $(`#player-${this.currentPlayer.id}-score`).text(0);
   }
 }
