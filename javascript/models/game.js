@@ -98,20 +98,29 @@ class Game {
 
   processAnswer(answer) {
     let result = this.checkAnswer(answer);
+    //grab answer from the game.
     console.log(result);
     if (result == true) {
       //grab the score and add it to their total
-      let acquiredPoints = this.wheel.value;
-      //add it to their player total.
-      this.currentPlayer.cash += acquiredPoints;
+      let earnedCash = this.wheel.value;
+      console.log(`Wheel cash is ${this.wheel.value}`)
+      this.updateCash(earnedCash);
       //begin a new round
       this.createNewRound();
+      this.nextPlayer();
       console.log("Correct")
     } else {
       // display: "wrong"
       // add
       console.log("WRONG")
+      this.nextPlayer();
     }
+  }
+
+  updateCash(earnedCash) {
+   this.currentPlayer.updateCash(earnedCash);
+   console.log("cash is ", this.currentPlayer.cash)
+   $(`#player-${this.currentPlayer.id}-score`).text(this.currentPlayer.cash);
   }
 
   checkAnswer(answer) {
@@ -134,8 +143,10 @@ class Game {
   createNewRound() {
     let round = new Round(this.round.num + 1);
     this.round = round;
+    //empty the previous round
+   $(".round-listing").remove();
     console.log(`current round is ${this.round.num}`)
-    $(".game").append(`<h3>Round: ${this.round.num}</h3>`)
+    $(".game").append(`<h3 class='round-listing'>Round: ${this.round.num}</h3>`)
     //this needs to wipe the board and start over.
     this.removePuzzle();
   }
@@ -146,13 +157,13 @@ class Game {
     let id = this.currentPlayer.id + '';
     $(`#player-${this.currentPlayer.id}-score`).text(0);
   }
+
   removePuzzle(){
-    $(".puzzle").remove();
-    $(".buttons").remove();
+    $(".puzzle").empty();
+    $(".buttons").empty();
     $(".spin-result").remove();
     if (this.round.num <= 4) {
       //start a new round.
-      console.log("inside the block")
       this.startGame()
       this.initializeWheel();
       this.spinWheel();
