@@ -25,7 +25,6 @@ class Game {
     }
   }
 
-
   initializeWheel(){
     let selected = this.dataHandler.getWheelData();
     let wheel = new Wheel(selected)
@@ -47,9 +46,13 @@ class Game {
   }
 
   addPuzzle() {
-    let puzzle = data.puzzles.one_word_answers.puzzle_bank.sort(() => .5 - Math.random())[0];
+    let puzzleData = data.puzzles.one_word_answers.puzzle_bank.sort(() => .5 - Math.random())[0];
+    let puzzle = new Puzzle(puzzleData.category, puzzleData.number_of_words,puzzleData.first_word,puzzleData.description, puzzleData.correct_answer)
+    this.puzzle = puzzle;
+    puzzle.obfuscateAnswer();
     $(".puzzle").append(
       `<div class='puzzle'>
+        <p class='answer'>${this.puzzle.inProgressAnswer}</p>
         <p>category: ${puzzle.category}</p>
         <p>number of words: ${puzzle.number_of_words}</p>
         <p>length of first word: ${puzzle.first_word}</p>
@@ -58,6 +61,26 @@ class Game {
         <button class='answer-submit'>Submit</button>
       </div>`
     )
+    $(".buttons").append(
+      `
+      <select class="vowels">
+        <option value="a">a</option>
+        <option value="e">e</option>
+        <option value="i">i</option>
+        <option value="o">o</option>
+        <option value="u">u</option>
+      </select>
+      <button class='vowel-submit'>Buy A Vowel</button>
+      `
+    )
+    $(".vowel-submit").click(() => {
+      //grab the value of the currently selected option
+      let selectedOption = $(".vowels option:selected").text();
+      console.log(selectedOption);
+      this.puzzle.buyAVowel(selectedOption);
+      //display new inProgressAnswer
+      this.puzzle.updateInProgressAnswer();
+    })
   }
 
   nextPlayer() {
