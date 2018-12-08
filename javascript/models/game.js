@@ -30,14 +30,18 @@ class Game {
     let wheel = new Wheel(selected)
     this.wheel = wheel;
     //insert the wheel
-    $(".wheel").append(`<div class='wheel-options'>Your options are: ${wheel.options}</div>`)
+    $(".wheel").append(`
+    <div class='wheel-options'>Your options are: ${wheel.options}</div>
+    <div></div>
+    `)
   }
+
   spinWheel() {
     $(".wheel-spin").click((e) => {
       const spinVal = this.wheel.selectValue();
       $(".wheel-options").remove();
       $(".wheel").append(
-        `<div spin-result>Your spin is ${spinVal}</div>`
+        `<div class='spin-result'>Your spin is ${spinVal}</div>`
       )
       this.processSpinValue(spinVal);
       this.addPuzzle();
@@ -48,6 +52,7 @@ class Game {
   addPuzzle() {
     let puzzleData = data.puzzles.one_word_answers.puzzle_bank.sort(() => .5 - Math.random())[0];
     let puzzle = new Puzzle(puzzleData.category, puzzleData.number_of_words,puzzleData.first_word,puzzleData.description, puzzleData.correct_answer)
+    console.log("correct answer is: " + puzzle.correct_answer)
     this.puzzle = puzzle;
     puzzle.obfuscateAnswer();
     $(".puzzle").append(
@@ -57,7 +62,7 @@ class Game {
         <p>number of words: ${puzzle.number_of_words}</p>
         <p>length of first word: ${puzzle.first_word}</p>
         <p>description: ${puzzle.description}</p>
-        <input type="text" name="answer-section">
+        <input type="text" name="answer-section" class="answer-box">
         <button class='answer-submit'>Submit</button>
       `
     )
@@ -73,6 +78,7 @@ class Game {
       <button class='vowel-submit'>Buy A Vowel</button>
       `
     )
+
     $(".vowel-submit").click(() => {
       //grab the value of the currently selected option
       let selectedOption = $(".vowels option:selected").text();
@@ -81,6 +87,35 @@ class Game {
       //display new inProgressAnswer
       this.puzzle.updateInProgressAnswer();
     })
+
+    $(".answer-submit").click((e) => {
+      //grab the value of the box
+      let answer = $(".answer-box").val();
+      console.log(answer);
+      this.processAnswer(answer);
+    })
+  }
+
+  processAnswer(answer) {
+    let result = this.checkAnswer(answer);
+    console.log(result);
+    if (result == true) {
+      //grab the score and add it to their total
+      let acquiredPoints = this.wheel.value;
+      //add it to their player total.
+      this.currentPlayer.cash += acquiredPoints;
+      //begin a new round
+      this.createNewRound();
+      console.log("Correct")
+    } else {
+      // display: "wrong"
+      // add
+      console.log("WRONG")
+    }
+  }
+
+  checkAnswer(answer) {
+    return this.puzzle.checkAnswer(answer);
   }
 
   nextPlayer() {
@@ -101,6 +136,8 @@ class Game {
     this.round = round;
     console.log(`current round is ${this.round.num}`)
     $(".game").append(`<h3>Round: ${this.round.num}</h3>`)
+    //this needs to wipe the board and start over.
+    this.removePuzzle();
   }
 
   getBankrupt() {
@@ -108,5 +145,17 @@ class Game {
     this.currentPlayer.cash = 0;
     let id = this.currentPlayer.id + '';
     $(`#player-${this.currentPlayer.id}-score`).text(0);
+  }
+  removePuzzle(){
+    $(".puzzle").remove();
+    $(".buttons").remove();
+    $(".spin-result").remove();
+    if (this.round.num <= 4) {
+      //start a new round.
+      console.log("inside the block")
+      this.startGame()
+      this.initializeWheel();
+      this.spinWheel();
+    }
   }
 }

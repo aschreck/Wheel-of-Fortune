@@ -44,4 +44,11 @@ class Puzzle  {
     this.inProgressAnswer = splitProgress.join('');
     this.updateInProgressAnswer();
   }
+  checkAnswer(answer) {
+    if (answer == this.correct_answer) {
+      return true
+    } else {
+      return false
+    }
+  }
 }
