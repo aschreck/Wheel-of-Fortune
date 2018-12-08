@@ -24,7 +24,7 @@ class Puzzle  {
 
   updateInProgressAnswer() {
     console.log("in progress answer: ",this.inProgressAnswer)
-    $(".answer").replaceWith(this.inProgressAnswer);
+    $(".answer")[0].innerHTML = this.inProgressAnswer;
   }
 
   buyAVowel(vowel) {

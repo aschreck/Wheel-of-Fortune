@@ -51,7 +51,7 @@ class Game {
     this.puzzle = puzzle;
     puzzle.obfuscateAnswer();
     $(".puzzle").append(
-      `<div class='puzzle'>
+      `
         <p class='answer'>${this.puzzle.inProgressAnswer}</p>
         <p>category: ${puzzle.category}</p>
         <p>number of words: ${puzzle.number_of_words}</p>
@@ -59,7 +59,7 @@ class Game {
         <p>description: ${puzzle.description}</p>
         <input type="text" name="answer-section">
         <button class='answer-submit'>Submit</button>
-      </div>`
+      `
     )
     $(".buttons").append(
       `
