@@ -9,6 +9,7 @@ class Game {
   }
 
   startGame() {
+    this.updatePlayerCash()
     $(".game").append("<button class='wheel-spin'>Spin the Wheel!</button>")
   }
 
@@ -29,6 +30,7 @@ class Game {
     let selected = this.dataHandler.getWheelData();
     let wheel = new Wheel(selected)
     this.wheel = wheel;
+    this.updateCurrentPlayer();
     //insert the wheel
     $(".wheel").append(`
     <div class='wheel-options'>Your options are: ${wheel.options}</div>
@@ -83,9 +85,16 @@ class Game {
       //grab the value of the currently selected option
       let selectedOption = $(".vowels option:selected").text();
       console.log(selectedOption);
-      this.puzzle.buyAVowel(selectedOption);
+      // deduct money from their account
+      let paymentCheck = this.payForVowel();
+      console.log(paymentCheck)
+      if (paymentCheck) {
+        this.puzzle.buyAVowel(selectedOption);
+        this.puzzle.updateInProgressAnswer();
+      } else {
+        alert("You don't have enough money!")
+      }
       //display new inProgressAnswer
-      this.puzzle.updateInProgressAnswer();
     })
 
     $(".answer-submit").click((e) => {
@@ -93,7 +102,19 @@ class Game {
       let answer = $(".answer-box").val();
       console.log(answer);
       this.processAnswer(answer);
+      $(".answer-box").text("");
     })
+  }
+
+  payForVowel() {
+    console.log(this.currentPlayer.cash)
+    if(this.currentPlayer.cash >= 100) {
+      this.currentPlayer.cash -= 100;
+      this.updatePlayerCash()
+      return true;
+    } else {
+      return false;
+    }
   }
 
   processAnswer(answer) {
@@ -137,7 +158,12 @@ class Game {
       //restart the round.
       this.createNewRound()
     }
+    this.updateCurrentPlayer();
     console.log(`current player is ${this.currentPlayer.id}`)
+  }
+
+  updateCurrentPlayer() {
+    $(".current-player").text(`It's player ${this.currentPlayer.id}'s turn`);
   }
 
   createNewRound() {
@@ -168,5 +194,12 @@ class Game {
       this.initializeWheel();
       this.spinWheel();
     }
+  }
+
+  updatePlayerCash() {
+    //make sure all the displayed values are in line with the object values
+    $("#player-1-score").text(this.player1.cash)
+    $("#player-2-score").text(this.player2.cash)
+    $("#player-3-score").text(this.player3.cash)
   }
 }

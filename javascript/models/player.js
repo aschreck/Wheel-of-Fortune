@@ -1,6 +1,6 @@
 class Player {
   constructor(id) {
-    this.cash = 0;
+    this.cash = 300;
     this.id = id;
   }
 
